@@ -4,16 +4,14 @@ Modulos, vistas
 
 import json
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask import Blueprint, render_template, request, url_for
+from flask_login import login_required
 
-from can_mayor.blueprints.bitacoras.models import Bitacora
-from can_mayor.blueprints.modulos.forms import ModuloForm
 from can_mayor.blueprints.modulos.models import Modulo
 from can_mayor.blueprints.permisos.models import Permiso
 from can_mayor.blueprints.usuarios.decorators import permission_required
 from lib.datatables import get_datatable_parameters, output_datatable_json
-from lib.safe_string import safe_message, safe_string
+from lib.safe_string import safe_string
 
 MODULO = "MODULOS"
 
@@ -98,136 +96,3 @@ def detail(modulo_id):
     """Detalle de un Modulo"""
     modulo = Modulo.query.get_or_404(modulo_id)
     return render_template("modulos/detail.jinja2", modulo=modulo)
-
-
-@modulos.route("/modulos/nuevo", methods=["GET", "POST"])
-@permission_required(MODULO, Permiso.CREAR)
-def new():
-    """Nuevo Modulo"""
-    form = ModuloForm()
-    if form.validate_on_submit():
-        # Validar que el nombre no se repita
-        nombre = safe_string(form.nombre.data, save_enie=True)
-        if Modulo.query.filter_by(nombre=nombre).first():
-            flash("El nombre ya está en uso. Debe de ser único.", "warning")
-            return render_template("modulos/new.jinja2", form=form)
-        # Guardar
-        modulo = Modulo(
-            nombre=nombre,
-            nombre_corto=safe_string(form.nombre_corto.data, do_unidecode=False, to_uppercase=False, save_enie=True),
-            icono=form.icono.data,
-            ruta=form.ruta.data,
-            en_navegacion=form.en_navegacion.data,
-            en_plataforma_can_mayor=form.en_plataforma_can_mayor.data,
-            en_plataforma_carina=form.en_plataforma_carina.data,
-            en_plataforma_hercules=form.en_plataforma_hercules.data,
-            en_plataforma_web=form.en_plataforma_web.data,
-            en_portal_notarias=form.en_portal_notarias.data,
-        )
-        modulo.save()
-        bitacora = Bitacora(
-            modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-            usuario=current_user,
-            descripcion=safe_message(f"Nuevo Modulo {modulo.nombre}"),
-            url=url_for("modulos.detail", modulo_id=modulo.id),
-        )
-        bitacora.save()
-        flash(bitacora.descripcion, "success")
-        return redirect(bitacora.url)
-    return render_template("modulos/new.jinja2", form=form)
-
-
-@modulos.route("/modulos/edicion/<int:modulo_id>", methods=["GET", "POST"])
-@permission_required(MODULO, Permiso.MODIFICAR)
-def edit(modulo_id):
-    """Editar Modulo"""
-    modulo = Modulo.query.get_or_404(modulo_id)
-    form = ModuloForm()
-    if form.validate_on_submit():
-        es_valido = True
-        # Si cambia el nombre verificar que no este en uso
-        nombre = safe_string(form.nombre.data, save_enie=True)
-        if modulo.nombre != nombre:
-            modulo_existente = Modulo.query.filter_by(nombre=nombre).first()
-            if modulo_existente and modulo_existente.id != modulo.id:
-                es_valido = False
-                flash("El nombre ya está en uso. Debe de ser único.", "warning")
-        # Si es valido actualizar
-        if es_valido:
-            modulo.nombre = nombre
-            modulo.nombre_corto = safe_string(form.nombre_corto.data, do_unidecode=False, to_uppercase=False, save_enie=True)
-            modulo.icono = form.icono.data
-            modulo.ruta = form.ruta.data
-            modulo.en_navegacion = form.en_navegacion.data
-            modulo.en_plataforma_can_mayor = form.en_plataforma_can_mayor.data
-            modulo.en_plataforma_carina = form.en_plataforma_carina.data
-            modulo.en_plataforma_hercules = form.en_plataforma_hercules.data
-            modulo.en_plataforma_web = form.en_plataforma_web.data
-            modulo.en_portal_notarias = form.en_portal_notarias.data
-            modulo.save()
-            bitacora = Bitacora(
-                modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-                usuario=current_user,
-                descripcion=safe_message(f"Editado Modulo {modulo.nombre}"),
-                url=url_for("modulos.detail", modulo_id=modulo.id),
-            )
-            bitacora.save()
-            flash(bitacora.descripcion, "success")
-            return redirect(bitacora.url)
-    form.nombre.data = modulo.nombre
-    form.nombre_corto.data = modulo.nombre_corto
-    form.icono.data = modulo.icono
-    form.ruta.data = modulo.ruta
-    form.en_navegacion.data = modulo.en_navegacion
-    form.en_plataforma_can_mayor.data = modulo.en_plataforma_can_mayor
-    form.en_plataforma_carina.data = modulo.en_plataforma_carina
-    form.en_plataforma_hercules.data = modulo.en_plataforma_hercules
-    form.en_plataforma_web.data = modulo.en_plataforma_web
-    form.en_portal_notarias.data = modulo.en_portal_notarias
-    return render_template("modulos/edit.jinja2", form=form, modulo=modulo)
-
-
-@modulos.route("/modulos/eliminar/<int:modulo_id>")
-@permission_required(MODULO, Permiso.ADMINISTRAR)
-def delete(modulo_id):
-    """Eliminar Modulo"""
-    este_modulo = Modulo.query.get_or_404(modulo_id)
-    if este_modulo.estatus == "A":
-        # Dar de baja el modulo
-        este_modulo.delete()
-        # Dar de baja los permisos asociados
-        for permiso in este_modulo.permisos:
-            permiso.delete()
-        # Guardar en la bitacora
-        bitacora = Bitacora(
-            modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-            usuario=current_user,
-            descripcion=safe_message(f"Eliminado Modulo {este_modulo.nombre}"),
-            url=url_for("modulos.detail", modulo_id=este_modulo.id),
-        )
-        bitacora.save()
-        flash(bitacora.descripcion, "success")
-    return redirect(url_for("modulos.detail", modulo_id=este_modulo.id))
-
-
-@modulos.route("/modulos/recuperar/<int:modulo_id>")
-@permission_required(MODULO, Permiso.ADMINISTRAR)
-def recover(modulo_id):
-    """Recuperar Modulo"""
-    este_modulo = Modulo.query.get_or_404(modulo_id)
-    if este_modulo.estatus == "B":
-        # Dar de alta el modulo
-        este_modulo.recover()
-        # Dar de alta los permisos asociados
-        for permiso in este_modulo.permisos:
-            permiso.recover()
-        # Guardar en la bitacora
-        bitacora = Bitacora(
-            modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-            usuario=current_user,
-            descripcion=safe_message(f"Recuperado Modulo {este_modulo.nombre}"),
-            url=url_for("modulos.detail", modulo_id=este_modulo.id),
-        )
-        bitacora.save()
-        flash(bitacora.descripcion, "success")
-    return redirect(url_for("modulos.detail", modulo_id=este_modulo.id))
