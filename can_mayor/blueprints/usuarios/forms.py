@@ -24,20 +24,3 @@ class AccesoForm(FlaskForm):
     email = StringField("Correo electrónico", validators=[Optional(), Email()])
     token = StringField("Token", validators=[Optional()])
     guardar = SubmitField("Guardar")
-
-
-class UsuarioForm(FlaskForm):
-    """Formulario Usuario"""
-
-    distrito = SelectField("Distrito", choices=None, validate_choice=False)  # Las opciones se agregan con JS
-    autoridad = SelectField("Autoridad", choices=None, validate_choice=False)  # Las opciones se agregan con JS
-    oficina = SelectField("Oficina", coerce=int, validate_choice=False)  # Select2
-    email = StringField("e-mail", validators=[DataRequired(), Email()])
-    nombres = StringField("Nombres", validators=[DataRequired(), Length(max=256)])
-    apellido_paterno = StringField("Apellido primero", validators=[DataRequired(), Length(max=256)])
-    apellido_materno = StringField("Apellido segundo", validators=[Optional(), Length(max=256)])
-    curp = StringField("CURP habilita recibos de nómina", validators=[Optional(), Length(max=256)])
-    puesto = StringField("Puesto", validators=[Optional(), Length(max=256)])
-    workspace = SelectField("Workspace", choices=Usuario.WORKSPACES.items(), validators=[DataRequired()])
-    efirma_registro_id = IntegerField("ID eFirma habilita firma electrónica", validators=[Optional()])
-    guardar = SubmitField("Guardar")

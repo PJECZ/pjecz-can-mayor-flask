@@ -12,14 +12,12 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from pytz import timezone
 
-from can_mayor.blueprints.autoridades.models import Autoridad
 from can_mayor.blueprints.bitacoras.models import Bitacora
-from can_mayor.blueprints.distritos.models import Distrito
 from can_mayor.blueprints.entradas_salidas.models import EntradaSalida
 from can_mayor.blueprints.modulos.models import Modulo
 from can_mayor.blueprints.permisos.models import Permiso
 from can_mayor.blueprints.usuarios.decorators import anonymous_required, permission_required
-from can_mayor.blueprints.usuarios.forms import AccesoForm, UsuarioForm
+from can_mayor.blueprints.usuarios.forms import AccesoForm
 from can_mayor.blueprints.usuarios.models import Usuario
 from config.firebase import get_firebase_settings
 from lib.datatables import get_datatable_parameters, output_datatable_json

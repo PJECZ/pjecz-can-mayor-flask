@@ -4,17 +4,14 @@ Distritos, vistas
 
 import json
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from can_mayor.blueprints.bitacoras.models import Bitacora
-from can_mayor.blueprints.distritos.forms import DistritoForm
 from can_mayor.blueprints.distritos.models import Distrito
-from can_mayor.blueprints.modulos.models import Modulo
 from can_mayor.blueprints.permisos.models import Permiso
 from can_mayor.blueprints.usuarios.decorators import permission_required
 from lib.datatables import get_datatable_parameters, output_datatable_json
-from lib.safe_string import safe_clave, safe_message, safe_string
+from lib.safe_string import safe_clave, safe_string
 
 MODULO = "DISTRITOS"
 
