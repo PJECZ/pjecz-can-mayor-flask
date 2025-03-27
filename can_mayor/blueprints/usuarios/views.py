@@ -205,75 +205,6 @@ def select_json():
     return {"results": resultados, "pagination": {"more": False}}
 
 
-@usuarios.route("/usuarios/api_key_request/<int:usuario_id>", methods=["GET", "POST"])
-@login_required
-@permission_required(MODULO, Permiso.ADMINISTRAR)
-def request_api_key_json(usuario_id):
-    """Solicitar API Key"""
-
-    # Consultar usuario
-    usuario = Usuario.query.get_or_404(usuario_id)
-    if usuario.estatus != "A":
-        return {
-            "success": False,
-            "message": "El usuario no está activo",
-            "api_key": "",
-            "api_key_expiracion": "",
-        }
-
-    # Si se recibe action con clean, se va a limpiar
-    if "action" in request.form and request.form["action"] == "clean":
-        usuario.api_key = ""
-        usuario.api_key_expiracion = datetime(year=2000, month=1, day=1)
-        usuario.save()
-        mensaje = f"La API Key de {usuario.email} fue eliminada"
-        bitacora = Bitacora(
-            modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-            usuario=current_user,
-            descripcion=mensaje,
-            url=url_for("usuarios.detail", usuario_id=usuario.id),
-        )
-        bitacora.save()
-        return {
-            "success": True,
-            "message": mensaje,
-            "api_key": usuario.api_key,
-            "api_key_expiracion": usuario.api_key_expiracion,
-        }
-
-    # Si se recibe action con new, se va a crear una nueva
-    if "action" in request.form and request.form["action"] == "new":
-        if "days" in request.form:
-            days = int(request.form["days"])
-        else:
-            days = 90
-        usuario.api_key = generar_api_key(usuario.id, usuario.email)
-        usuario.api_key_expiracion = datetime.now() + timedelta(days=days)
-        usuario.save()
-        mensaje = f"Nueva API Key para {usuario.email} con expiración en {days} días"
-        bitacora = Bitacora(
-            modulo=Modulo.query.filter_by(nombre=MODULO).first(),
-            usuario=current_user,
-            descripcion=mensaje,
-            url=url_for("usuarios.detail", usuario_id=usuario.id),
-        )
-        bitacora.save()
-        return {
-            "success": True,
-            "message": mensaje,
-            "api_key": usuario.api_key,
-            "api_key_expiracion": usuario.api_key_expiracion,
-        }
-
-    # Si no se recibe nada, entregar la actual
-    return {
-        "success": True,
-        "message": "Se ha entregado la API Key a la interfaz",
-        "api_key": usuario.api_key,
-        "api_key_expiracion": usuario.api_key_expiracion,
-    }
-
-
 @usuarios.route("/usuarios")
 @login_required
 @permission_required(MODULO, Permiso.VER)
@@ -309,29 +240,3 @@ def detail(usuario_id):
     return render_template("usuarios/detail.jinja2", usuario=usuario)
 
 
-@usuarios.route("/usuarios/api_key/<int:usuario_id>")
-@login_required
-@permission_required(MODULO, Permiso.ADMINISTRAR)
-def view_api_key(usuario_id):
-    """Ver API Key"""
-
-    # Consultar usuario
-    usuario = Usuario.query.get_or_404(usuario_id)
-    if usuario.estatus != "A":
-        flash("El usuario no está activo.", "warning")
-        return redirect(url_for("usuarios.detail", usuario_id=usuario.id))
-
-    # Juntar los permisos por nivel
-    permisos_por_nivel = {1: [], 2: [], 3: [], 4: []}
-    for etiqueta, nivel in usuario.permisos.items():
-        permisos_por_nivel[nivel].append(etiqueta)
-
-    # Mostrar api_key.jinja2
-    return render_template(
-        "usuarios/api_key.jinja2",
-        usuario=usuario,
-        permisos_en_nivel_1=sorted(permisos_por_nivel[1]),
-        permisos_en_nivel_2=sorted(permisos_por_nivel[2]),
-        permisos_en_nivel_3=sorted(permisos_por_nivel[3]),
-        permisos_en_nivel_4=sorted(permisos_por_nivel[4]),
-    )
