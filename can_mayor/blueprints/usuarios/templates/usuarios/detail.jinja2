@@ -8,16 +8,6 @@
 {% block topbar_actions %}
     {% call topbar.page_buttons('Usuario ' + usuario.email) %}
         {{ topbar.button_previous('Usuarios', url_for('usuarios.list_active')) }}
-        {# if current_user.can_edit('USUARIOS') %}
-            {{ topbar.button_edit('Editar', url_for('usuarios.edit', usuario_id=usuario.id)) }}
-        {% endif #}
-        {% if current_user.can_admin('USUARIOS') %}
-            {% if usuario.estatus == 'A' %}
-                {{ topbar.button('API Key', url_for('usuarios.view_api_key', usuario_id=usuario.id), 'mdi:key') }}
-            {% endif %}
-            {# if usuario.estatus == 'A' %}{{ topbar.button_delete('Eliminar', url_for('usuarios.delete', usuario_id=usuario.id)) }}{% endif %}
-            {% if usuario.estatus == 'B' %}{{ topbar.button_recover('Recuperar', url_for('usuarios.recover', usuario_id=usuario.id)) }}{% endif #}
-        {% endif %}
     {% endcall %}
 {% endblock %}
 
@@ -74,10 +64,6 @@
 {% endblock %}
 
 {% block custom_javascript %}
-    {# if current_user.can_admin('USUARIOS') %}
-        {% if usuario.estatus == 'A' %}{{ modals.custom_javascript_delete('Eliminar', '¿Eliminar a ' + usuario.nombre + '?') }}{% endif %}
-        {% if usuario.estatus == 'B' %}{{ modals.custom_javascript_recover('Recuperar', '¿Recuperar a ' + usuario.nombre + '?') }}{% endif %}
-    {% endif #}
     <!-- Constructor de DataTables -->
     <script src="/static/js/datatables-constructor.js"></script>
     <script src="/static/js/datatables-filtros.js"></script>
