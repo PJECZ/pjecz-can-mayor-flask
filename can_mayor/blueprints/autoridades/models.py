@@ -85,9 +85,9 @@ class Autoridad(database.Model, UniversalMixin):
     )  # Clave del distrito judicial geografico
 
     # Hijos
-    arc_documentos: Mapped[List["ArcDocumento"]] = relationship(back_populates="autoridad")
-    arc_remesas: Mapped[List["ArcRemesa"]] = relationship(back_populates="autoridad")
-    arc_solicitudes: Mapped[List["ArcSolicitud"]] = relationship(back_populates="autoridad")
+    # arc_documentos: Mapped[List["ArcDocumento"]] = relationship(back_populates="autoridad")
+    # arc_remesas: Mapped[List["ArcRemesa"]] = relationship(back_populates="autoridad")
+    # arc_solicitudes: Mapped[List["ArcSolicitud"]] = relationship(back_populates="autoridad")
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="autoridad")
 
     @property
