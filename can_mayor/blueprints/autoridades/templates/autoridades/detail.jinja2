@@ -8,13 +8,6 @@
 {% block topbar_actions %}
     {% call topbar.page_buttons('Autoridad ' + autoridad.clave) %}
         {{ topbar.button_previous('Autoridades', url_for('autoridades.list_active')) }}
-        {# if current_user.can_edit('AUTORIDADES') %}
-            {{ topbar.button_edit('Editar', url_for('autoridades.edit', autoridad_id=autoridad.id)) }}
-        {% endif #}
-        {# if current_user.can_admin('AUTORIDADES') %}
-            {% if autoridad.estatus == 'A' %}{{ topbar.button_delete('Eliminar', url_for('autoridades.delete', autoridad_id=autoridad.id)) }}{% endif %}
-            {% if autoridad.estatus == 'B' %}{{ topbar.button_recover('Recuperar', url_for('autoridades.recover', autoridad_id=autoridad.id)) }}{% endif %}
-        {% endif #}
     {% endcall %}
 {% endblock %}
 
@@ -30,6 +23,8 @@
                 {% endif %}
                 {{ detail.label_value('Descripción', autoridad.descripcion) }}
                 {{ detail.label_value('Descripción corta', autoridad.descripcion_corta) }}
+                {{ detail.label_value('Datawarehouse ID', autoridad.datawarehouse_id) }}
+                {{ detail.label_value('Datawarehouse ID (SAJI 2025)', autoridad.datawarehouse_id_saji) }}
             </div>
             <div class="col-md-6">
                 {{ detail.label_value_boolean('Es Archivo Solicitante', autoridad.es_archivo_solicitante, ignore_is_false=True) }}
@@ -90,11 +85,6 @@
 {% endblock %}
 
 {% block custom_javascript %}
-    <!-- Eliminar y recuperar -->
-    {# if current_user.can_edit('AUTORIDADES') %}
-        {% if autoridad.estatus == 'A' %}{{ modals.custom_javascript_delete('Eliminar', '¿Eliminar a ' + autoridad.clave + '?') }}{% endif %}
-        {% if autoridad.estatus == 'B' %}{{ modals.custom_javascript_recover('Recuperar', '¿Recuperar a ' + autoridad.clave + '?') }}{% endif %}
-    {% endif #}
     <!-- DataTable -->
     <script src="/static/js/datatables-constructor.js"></script>
     <script src="/static/js/datatables-filtros.js"></script>
