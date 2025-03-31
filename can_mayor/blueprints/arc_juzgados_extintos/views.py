@@ -215,7 +215,7 @@ def recover(arc_juzgado_extinto_id):
 
 
 @arc_juzgados_extintos.route("/arc_juzgados_extintos/juzgados_extintos_json", methods=["POST"])
-def query_juzgados_extintos_json():
+def select2_json():
     """Proporcionar el JSON de autoridades para elegir Juzgados con un Select2"""
     consulta = ArcJuzgadoExtinto.query.filter(ArcJuzgadoExtinto.estatus == "A")
     if "clave" in request.form:

@@ -29,7 +29,7 @@ main {
   background-size: cover;
   height: 100%;
   position: relative;
-  filter: hue-rotate(120deg);
+  filter: hue-rotate(200deg);
 }
 
 .form-signin {

@@ -24,6 +24,7 @@
         {% if current_user.can_insert('ARC DOCUMENTOS') %}
             {{ topbar.button_new('Nuevo Documento', url_for('arc_documentos.new')) }}
         {% endif %}
+        {{ topbar.button_manual('Manual', 'https://justiciadigital.gob.mx/plataforma_web/archivo/todos-expedientes') }}
     {% endcall %}
 {% endblock %}
 
