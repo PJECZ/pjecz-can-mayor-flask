@@ -6,16 +6,16 @@ import rq
 from flask import Flask
 from redis import Redis
 
-# from can_mayor.blueprints.arc_archivos.views import arc_archivos
-# from can_mayor.blueprints.arc_documentos.views import arc_documentos
-# from can_mayor.blueprints.arc_documentos_bitacoras.views import arc_documentos_bitacoras
-# from can_mayor.blueprints.arc_documentos_tipos.views import arc_documentos_tipos
-# from can_mayor.blueprints.arc_juzgados_extintos.views import arc_juzgados_extintos
-# from can_mayor.blueprints.arc_remesas.views import arc_remesas
-# from can_mayor.blueprints.arc_remesas_bitacoras.views import arc_remesas_bitacoras
-# from can_mayor.blueprints.arc_remesas_documentos.views import arc_remesas_documentos
-# from can_mayor.blueprints.arc_solicitudes.views import arc_solicitudes
-# from can_mayor.blueprints.arc_solicitudes_bitacoras.views import arc_solicitudes_bitacoras
+from can_mayor.blueprints.arc_archivos.views import arc_archivos
+from can_mayor.blueprints.arc_documentos.views import arc_documentos
+from can_mayor.blueprints.arc_documentos_bitacoras.views import arc_documentos_bitacoras
+from can_mayor.blueprints.arc_documentos_tipos.views import arc_documentos_tipos
+from can_mayor.blueprints.arc_juzgados_extintos.views import arc_juzgados_extintos
+from can_mayor.blueprints.arc_remesas.views import arc_remesas
+from can_mayor.blueprints.arc_remesas_bitacoras.views import arc_remesas_bitacoras
+from can_mayor.blueprints.arc_remesas_documentos.views import arc_remesas_documentos
+from can_mayor.blueprints.arc_solicitudes.views import arc_solicitudes
+from can_mayor.blueprints.arc_solicitudes_bitacoras.views import arc_solicitudes_bitacoras
 from can_mayor.blueprints.autoridades.views import autoridades
 from can_mayor.blueprints.bitacoras.views import bitacoras
 from can_mayor.blueprints.distritos.views import distritos
@@ -45,16 +45,16 @@ def create_app():
     app.task_queue = rq.Queue(app.config["TASK_QUEUE"], connection=app.redis, default_timeout=3000)
 
     # Registrar blueprints
-    # app.register_blueprint(arc_archivos)
-    # app.register_blueprint(arc_documentos)
-    # app.register_blueprint(arc_documentos_bitacoras)
-    # app.register_blueprint(arc_documentos_tipos)
-    # app.register_blueprint(arc_juzgados_extintos)
-    # app.register_blueprint(arc_remesas)
-    # app.register_blueprint(arc_remesas_bitacoras)
-    # app.register_blueprint(arc_remesas_documentos)
-    # app.register_blueprint(arc_solicitudes)
-    # app.register_blueprint(arc_solicitudes_bitacoras)
+    app.register_blueprint(arc_archivos)
+    app.register_blueprint(arc_documentos)
+    app.register_blueprint(arc_documentos_bitacoras)
+    app.register_blueprint(arc_documentos_tipos)
+    app.register_blueprint(arc_juzgados_extintos)
+    app.register_blueprint(arc_remesas)
+    app.register_blueprint(arc_remesas_bitacoras)
+    app.register_blueprint(arc_remesas_documentos)
+    app.register_blueprint(arc_solicitudes)
+    app.register_blueprint(arc_solicitudes_bitacoras)
     app.register_blueprint(autoridades)
     app.register_blueprint(bitacoras)
     app.register_blueprint(distritos)

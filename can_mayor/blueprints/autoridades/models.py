@@ -56,6 +56,7 @@ class Autoridad(database.Model, UniversalMixin):
     # Columnas
     clave: Mapped[str] = mapped_column(String(16), unique=True)
     datawarehouse_id: Mapped[int]  # Columna para comunicación con SAJI
+    datawarehouse_id_saji: Mapped[int]  # Columna para comunicación con SAJI
     descripcion: Mapped[str] = mapped_column(String(256))
     descripcion_corta: Mapped[str] = mapped_column(String(64))
     es_archivo_solicitante: Mapped[bool] = mapped_column(default=False)
@@ -85,9 +86,9 @@ class Autoridad(database.Model, UniversalMixin):
     )  # Clave del distrito judicial geografico
 
     # Hijos
-    # arc_documentos: Mapped[List["ArcDocumento"]] = relationship(back_populates="autoridad")
-    # arc_remesas: Mapped[List["ArcRemesa"]] = relationship(back_populates="autoridad")
-    # arc_solicitudes: Mapped[List["ArcSolicitud"]] = relationship(back_populates="autoridad")
+    arc_documentos: Mapped[List["ArcDocumento"]] = relationship(back_populates="autoridad")
+    arc_remesas: Mapped[List["ArcRemesa"]] = relationship(back_populates="autoridad")
+    arc_solicitudes: Mapped[List["ArcSolicitud"]] = relationship(back_populates="autoridad")
     usuarios: Mapped[List["Usuario"]] = relationship("Usuario", back_populates="autoridad")
 
     @property

@@ -101,8 +101,8 @@ def detail(distrito_id):
 
 
 @distritos.route("/distritos/select_json", methods=["GET", "POST"])
-def query_distritos_json():
-    """Proporcionar el JSON de distritos para elegir con un Select"""
+def select2_json():
+    """Proporcionar el JSON de distritos para elegir con un Select2"""
     # Consultar
     consulta = Distrito.query.filter_by(estatus="A").order_by(Distrito.nombre)
     # Elaborar datos para Select
