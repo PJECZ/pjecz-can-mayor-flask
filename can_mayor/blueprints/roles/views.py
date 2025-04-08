@@ -87,4 +87,3 @@ def detail(rol_id):
     """Detalle de un Rol"""
     rol = Rol.query.get_or_404(rol_id)
     return render_template("roles/detail.jinja2", rol=rol)
-

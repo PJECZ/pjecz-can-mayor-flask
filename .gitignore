@@ -5,14 +5,7 @@
 *.csv
 *.log
 *.py[cod]
-*.sqlite3
-*.sqlite3-journal
-*.session.sql
 *.sql
-*.xls
-*.xlsx
-*.XLS
-*.XLSX
 
 .bashrc
 .env
@@ -22,6 +15,7 @@ __pycache__/
 *.egg-info/
 
 /.idea/
+/.logs/
 /.venv/
 /seed/
 /venv/
