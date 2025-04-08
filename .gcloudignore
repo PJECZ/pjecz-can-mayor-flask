@@ -6,10 +6,9 @@
 .DS_Store
 .~lock.*
 
-*.csv
-*.log
 *.py[cod]
-*.sql
+*.egg-info/
+*.log
 *.sqlite3
 *.sqlite3-journal
 *.session.sql
